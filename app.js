@@ -4,8 +4,8 @@ const morgan = require("morgan");
 const app = express();
 const cookieParser = require("cookie-parser");
 
-const globalErrorHandler = require("./utils/errorController");
-const AppError = require("./utils/appError");
+const ErrorResponse = require("./utils/errorResponse");
+const handleError = require("./utils/handleError");
 
 //middleware
 app.use(morgan("dev"));
@@ -23,9 +23,9 @@ app.use((req, res, next) => {
 // routes
 
 app.all("*", (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(new ErrorResponse(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-app.use(globalErrorHandler);
+app.use(handleError());
 
 module.exports = app;
