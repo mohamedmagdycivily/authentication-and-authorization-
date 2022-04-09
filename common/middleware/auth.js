@@ -49,9 +49,6 @@ export default function AuthAPI(endPointName) {
     }
 
     // GRANT ACCESS TO PROTECTED ROUTE
-    console.log(endPointRoles);
-    console.log(currentUser.roles);
-
     const isAuthorized = currentUser.roles.some((r) => endPointRoles.indexOf(r) > -1);
     if (isAuthorized) {
       req.user = { ...currentUser };

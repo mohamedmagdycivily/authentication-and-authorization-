@@ -31,7 +31,7 @@ const login = async(req, res, next)=>{
         } = req.body;
 
         const data = await UserService.login({email, password});
-        return res.status(CREATED).json({
+        return res.status(OK).json({
             success: true,
             message: MESSAGES.DONE_SUCCESSFULLY,
             data
@@ -43,7 +43,18 @@ const login = async(req, res, next)=>{
 
 const updatePersonalInfo = async(req, res, next)=>{
     try{
-        return res.status(CREATED).json({
+        return res.status(OK).json({
+            success: true,
+            message: 'you have access to this api !!',
+        });
+    }catch(err){
+        return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
+    }
+}
+
+const superAdminOnly = async(req, res, next)=>{
+    try{
+        return res.status(OK).json({
             success: true,
             message: 'you have access to this api !!',
         });
@@ -55,4 +66,5 @@ export default {
     register,
     login,
     updatePersonalInfo,
+    superAdminOnly,
 }
