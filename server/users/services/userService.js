@@ -3,7 +3,6 @@ import {
 } from 'http-status';
 import _ from 'lodash';
 import bcrypt from 'bcryptjs';
-import sha256 from 'sha256';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import ErrorResponse from '../../../common/utils/errorResponse';
@@ -33,7 +32,7 @@ const userService = {
             );
           }
     
-          const userEmail = await User.findOne({"email.address": email});
+          const userEmail = await this.getUserByEmail(email);
 
           if (userEmail) {
             throw new ErrorResponse(
@@ -48,7 +47,7 @@ const userService = {
           const emailTokenExpiration = Date.now() + 3600000;
 
           const payload = {
-            roles: [ADMIN, ADMIN],
+            roles: [ADMIN],
             email: { address: email, verified: false },
             password,
             profile,
@@ -97,7 +96,7 @@ const userService = {
 
     async login({email, password}){
       try {
-        const user  = await User.findOne({"email.address": email});
+        const user  = await this.getUserByEmail(email);
         if (!user) {
           throw new ErrorResponse(
             errorCodes.USER_NOT_FOUND.message,
@@ -136,10 +135,25 @@ const userService = {
           errorCodes.LOGIN_FAILED.code,
         );
       } catch (err) {
-        logger.error(`[UserService.js][login_v2] Error: ${err.message}`);
         throw new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode);
       }
-    }
+    },
+
+    async getUserByEmail(email) {
+      const selector = { 'email.address': email };
+      const projection = {
+        fields: {
+          _id: 1,
+          hashedPassword: 1,
+          roles: 1,
+          email: 1,
+          profile: 1,
+          createdAt: 1,
+          lastSessionResetDate: 1,
+        },
+      };
+      return User.findOne(selector, projection);
+    },
 }
 
 export default userService;

@@ -40,7 +40,19 @@ const login = async(req, res, next)=>{
         return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
     }
 }
+
+const updatePersonalInfo = async(req, res, next)=>{
+    try{
+        return res.status(CREATED).json({
+            success: true,
+            message: 'you have access to this api !!',
+        });
+    }catch(err){
+        return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
+    }
+}
 export default {
     register,
     login,
+    updatePersonalInfo,
 }

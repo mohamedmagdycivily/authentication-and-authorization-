@@ -6,7 +6,6 @@ class User {
       let { fields } = projection;
       let allowedFields = {};
 
-
       return UserSchema.findOne(selector).select(fields).lean();
     }
 

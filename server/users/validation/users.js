@@ -2,6 +2,7 @@ import Joi from 'joi';
 import {
     USER__REGISTER,
     USER__LOGIN,
+    USER__UPDATE_PERSONAL_INFO,
 } from '../helpers/constant';
 
 export default {
@@ -27,5 +28,11 @@ export default {
       email: Joi.string().required(),
       password: Joi.string().required(),
     })
-  }
+  },
+  [USER__UPDATE_PERSONAL_INFO]: {
+    body: Joi.object().keys({
+      firstName: Joi.string().optional(),
+      lastName: Joi.string().optional(),
+    })
+  },
 }
