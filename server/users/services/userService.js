@@ -94,6 +94,52 @@ const userService = {
     generateJWTRefreshToken(payload) {
       return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION });
     },
+
+    async login({email, password}){
+      try {
+        const user  = await User.findOne({"email.address": email});
+        if (!user) {
+          throw new ErrorResponse(
+            errorCodes.USER_NOT_FOUND.message,
+            BAD_REQUEST,
+            errorCodes.USER_NOT_FOUND.code,
+          );
+        }
+
+        const isMatch = await bcrypt.compare(password, user.hashedPassword);
+        if (isMatch) {
+          const payload = await this.prepareUserObjectForJWTSigning(user);
+          const accessToken = this.generateJWTAccessToken(payload);
+          const refreshToken = this.generateJWTRefreshToken(payload);
+  
+          const {
+            _id,
+            email,
+            profile,
+            roles,
+          } = user;
+
+          return {
+            token: `Bearer ${accessToken}`,
+            refreshToken,
+            user: {
+              _id,
+              email,
+              profile,
+              roles,
+            },
+          };
+        }
+        throw new ErrorResponse(
+          errorCodes.LOGIN_FAILED.message,
+          BAD_REQUEST,
+          errorCodes.LOGIN_FAILED.code,
+        );
+      } catch (err) {
+        logger.error(`[UserService.js][login_v2] Error: ${err.message}`);
+        throw new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode);
+      }
+    }
 }
 
 export default userService;
