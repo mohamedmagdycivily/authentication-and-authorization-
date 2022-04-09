@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const app = require("./app");
+const app = require("./expressRouter");
 const dotenv = require("dotenv");
 
 dotenv.config({ path: "./config.env" });
