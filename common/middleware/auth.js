@@ -44,7 +44,7 @@ export default function AuthAPI(endPointName) {
       }
   
       // 3) Check if user still exists
-      const currentUser = await UserController.getUserById(decoded.id);
+      const currentUser = await UserController.getUser({_id:decoded.id});
       if (!currentUser) {
         return next(
           new AppError(

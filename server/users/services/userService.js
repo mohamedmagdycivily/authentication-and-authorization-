@@ -35,7 +35,7 @@ const userService = {
             );
           }
     
-          const userEmail = await this.getUserByEmail(email);
+          const userEmail = await this.getUser({ 'email.address': email });
 
           if (userEmail) {
             throw new ErrorResponse(
@@ -99,7 +99,7 @@ const userService = {
 
     async login({email, password}){
       try {
-        const user  = await this.getUserByEmail(email);
+        const user  = await this.getUser({ 'email.address': email });
         if (!user) {
           throw new ErrorResponse(
             errorCodes.USER_NOT_FOUND.message,
@@ -142,24 +142,7 @@ const userService = {
       }
     },
 
-    async getUserByEmail(email) {
-      const selector = { 'email.address': email };
-      const projection = {
-        fields: {
-          _id: 1,
-          hashedPassword: 1,
-          roles: 1,
-          email: 1,
-          profile: 1,
-          createdAt: 1,
-          lastSessionResetDate: 1,
-        },
-      };
-      return User.findOne(selector, projection);
-    },
-    async getUserById(id) {
-      console.log("🌟");
-      const selector = { '_id': id };
+    async getUser(selector) {
       const projection = {
         fields: {
           _id: 1,
