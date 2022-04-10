@@ -67,6 +67,9 @@ const UserSchema = new Schema(
       emailToken: {
         type: String,
       },
+      emailTokenExpiration: {
+        type: String,
+      },
     },
     { collection: 'users', timestamps: true },
   );

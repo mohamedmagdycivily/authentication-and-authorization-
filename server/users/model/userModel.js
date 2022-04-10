@@ -11,6 +11,11 @@ class User {
     async create(params) {
         return UserSchema.create(params);
     }
+
+    async update(_id, newParams, options = {}) {
+      options.runValidators = true;
+      return UserSchema.findByIdAndUpdate(_id, newParams, options);
+    }
 }
 
 export default new User();

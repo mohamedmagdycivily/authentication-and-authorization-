@@ -48,6 +48,7 @@ const userService = {
 
           const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
           const emailToken = crypto.randomBytes(20).toString('hex');
+          const emailTokenExpiration = Date.now() + 3600000;
 
           const payload = {
             roles: [ADMIN],
@@ -56,6 +57,7 @@ const userService = {
             profile,
             hashedPassword,
             emailToken,
+            emailTokenExpiration,
           };
     
           let newUser = await User.create(payload);
@@ -197,6 +199,24 @@ const userService = {
       } catch (err) {
         throw new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode);
       }
+    },
+
+    async confirmEmailToken(token) {
+      let selector = {};
+      selector = {
+        emailToken: token,
+        emailTokenExpiration: { $gt: Date.now() },
+      };
+      const user = await User.findOne(selector);
+      if (!user) {
+        throw new ErrorResponse('No valid token found', BAD_REQUEST);
+      }
+      const params = {
+        'email.verified': true,
+        emailToken: null,
+        emailTokenExpiration: null,
+      };
+      return User.update(user._id, { $set: params });
     },
 }
 

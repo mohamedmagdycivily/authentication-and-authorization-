@@ -11,6 +11,7 @@ const {
     updatePersonalInfo,
     superAdminOnly,
     refreshTokens,
+    confirmEmailToken,
 } = middleware;
 
 const Router = express.Router();
@@ -43,4 +44,9 @@ Router.post(
     validateRequest(validationSchemas[USER_REFRESH_TOKENS]),
     refreshTokens,
   );
+
+Router.patch(
+    '/activateAccount/:token',
+    confirmEmailToken,
+);
 module.exports = Router;

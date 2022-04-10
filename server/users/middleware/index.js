@@ -80,10 +80,26 @@ const refreshTokens = async (req, res, next) => {
       return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
     }
   };
+
+  const confirmEmailToken = async (req, res, next) => {
+    try {
+      const hashedToken = req.params.token;
+      await UserService.confirmEmailToken(hashedToken);
+  
+      return res.status(OK).json({
+        success: true,
+        message: MESSAGES.EMAIL_VERIFIED,
+        data: null,
+      });
+    } catch (err) {
+      return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
+    }
+  };
 export default {
     register,
     login,
     updatePersonalInfo,
     superAdminOnly,
     refreshTokens,
+    confirmEmailToken
 }

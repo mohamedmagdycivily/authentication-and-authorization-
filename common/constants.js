@@ -4,6 +4,7 @@ export const SALT_ROUNDS = 12;
 export const MESSAGES = {
     CREATED: 'created successfully.',
     DONE_SUCCESSFULLY: 'Done successfully.',
+    EMAIL_VERIFIED: 'Email verified successfully.',
 }
 export const errorCodes = {
   ILLEGAL_ARGUMENT_EXCEPTION: { message: 'Illegal argument exception.', code: 1003 },
