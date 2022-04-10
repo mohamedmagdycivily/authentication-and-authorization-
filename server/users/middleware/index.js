@@ -13,6 +13,7 @@ const register = async(req, res, next)=>{
             email,
             password,
             profile,
+            req,
         });
         return res.status(CREATED).json({
             success: true,

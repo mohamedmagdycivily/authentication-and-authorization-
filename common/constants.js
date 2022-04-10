@@ -16,4 +16,11 @@ export const errorCodes = {
     message: 'Invalid signature',
     code: 1067,
   },
+  USER_IS_NOT_VERFIED: {
+    message: 'your account is not verified, please check your mail to activate your count',
+    code: 1068,
+  },
+  LOGIN_FAILED: { message: 'Login Failed: invalid email or password.', code: 1045 },
+  USER_NO_LONGER_EXIST: { message: 'The user belonging to this token does no longer exist.', code: 1050 },
+  USER_CHANGED_PASSWORED: { message: 'User recently changed password! Please log in again.', code: 1060 },
 }

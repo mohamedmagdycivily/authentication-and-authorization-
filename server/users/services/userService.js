@@ -9,6 +9,7 @@ import ErrorResponse from '../../../common/utils/errorResponse';
 import { errorCodes, SALT_ROUNDS } from '../../../common/constants';
 import User from '../model/userModel';
 import { ADMIN } from '../helpers/constant';
+const Email = require("./../../../common/utils/email");
 const secret = process.env.JWT_SECRET || 'BGWWgrUmlx';
 const accessTokenExpiration = process.env.ACCESS_TOKEN_EXPIRATION || '1d';
 const refreshTokenExpiration = process.env.REFRESH_TOKEN_EXPIRATION || '30d';
@@ -17,7 +18,7 @@ const userService = {
         email,
         password,
         profile,
-
+        req
       }) {
         try {
           if (
@@ -47,7 +48,6 @@ const userService = {
 
           const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
           const emailToken = crypto.randomBytes(20).toString('hex');
-          const emailTokenExpiration = Date.now() + 3600000;
 
           const payload = {
             roles: [ADMIN],
@@ -56,22 +56,29 @@ const userService = {
             profile,
             hashedPassword,
             emailToken,
-            emailTokenExpiration,
           };
     
-          let result = await User.create(payload);
-          result = result.toObject();
-          delete result.emailToken;
-          delete result.emailTokenExpiration;
-          // TODO: send mail to the user
-          const accessTokenPayload = await this.prepareUserObjectForJWTSigning(result);
+          let newUser = await User.create(payload);
+          newUser = newUser.toObject();
+          delete newUser.emailToken;
+
+          const accessTokenPayload = await this.prepareUserObjectForJWTSigning(newUser);
           const accessToken = this.generateJWTAccessToken(accessTokenPayload);
           const refreshToken = this.generateJWTRefreshToken(accessTokenPayload);
     
+          // send mail to the user
+          const url = `
+          please hit the LINK to activate your account on auth website
+           ${req.protocol}://${req.get("host")}/api/v0/users/activateAccount/${
+            emailToken
+          }
+            if you did not registered on the website then please ignore this mail
+          `;
+          new Email(newUser, url).sendMail("Welcome to the auth !");
           return {
             refreshToken,
             token: `Bearer ${accessToken}`,
-            user: result,
+            user: newUser,
           };
         } catch (err) {
           throw new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode);
@@ -107,7 +114,13 @@ const userService = {
             errorCodes.USER_NOT_FOUND.code,
           );
         }
-
+        if (!user.email.verified) {
+          throw new ErrorResponse(
+            errorCodes.USER_IS_NOT_VERFIED.message,
+            BAD_REQUEST,
+            errorCodes.USER_IS_NOT_VERFIED.code,
+          );
+        }
         const isMatch = await bcrypt.compare(password, user.hashedPassword);
         if (isMatch) {
           const payload = await this.prepareUserObjectForJWTSigning(user);

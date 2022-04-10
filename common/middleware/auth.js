@@ -2,7 +2,7 @@ import { UNAUTHORIZED, FORBIDDEN } from 'http-status';
 import usersRoles from '../../server/users/roles';
 import UserController from '../../server/users/controllers/userController'
 import ErrorResponse from '../utils/errorResponse';
-const { INTERNAL_SERVER_ERROR } = require('http-status');
+const { INTERNAL_SERVER_ERROR , BAD_REQUEST} = require('http-status');
 import { errorCodes } from '../constants';
 
 const jwt = require("jsonwebtoken");
@@ -46,21 +46,28 @@ export default function AuthAPI(endPointName) {
       // 3) Check if user still exists
       const currentUser = await UserController.getUser({_id:decoded.id});
       if (!currentUser) {
-        return next(
-          new AppError(
-            "The user belonging to this token does no longer exist.",
-            401
-          )
+        throw new ErrorResponse(
+          errorCodes.USER_NO_LONGER_EXIST.message,
+          UNAUTHORIZED,
+          errorCodes.USER_NO_LONGER_EXIST.code,
         );
       }
-  
+      if (!currentUser.email.verified) {
+        throw new ErrorResponse(
+          errorCodes.USER_IS_NOT_VERFIED.message,
+          BAD_REQUEST,
+          errorCodes.USER_IS_NOT_VERFIED.code,
+        );
+      }
       // 4) Check if user changed password after the token was issued
       const changedTimestamp = parseInt(
         currentUser.lastSessionResetDate.getTime() / 1000
       );
       if (decoded.iat < changedTimestamp) {
-        return next(
-          new AppError("User recently changed password! Please log in again.", 401)
+        throw new ErrorResponse(
+          errorCodes.USER_CHANGED_PASSWORED.message,
+          BAD_REQUEST,
+          errorCodes.USER_CHANGED_PASSWORED.code,
         );
       }
   

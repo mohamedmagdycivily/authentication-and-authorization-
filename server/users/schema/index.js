@@ -64,7 +64,9 @@ const UserSchema = new Schema(
         required: false,
         default: new Date(),
       },
-
+      emailToken: {
+        type: String,
+      },
     },
     { collection: 'users', timestamps: true },
   );
