@@ -3,6 +3,7 @@ import {
     USER__REGISTER,
     USER__LOGIN,
     USER__UPDATE_PERSONAL_INFO,
+    USER_REFRESH_TOKENS,
 } from '../helpers/constant';
 
 export default {
@@ -34,5 +35,12 @@ export default {
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
     })
+  },
+  [USER_REFRESH_TOKENS]: {
+    body: Joi.object()
+      .keys({
+        refreshToken: Joi.string().required(),
+      })
+      .required(),
   },
 }

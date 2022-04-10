@@ -62,9 +62,27 @@ const superAdminOnly = async(req, res, next)=>{
         return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
     }
 }
+
+const refreshTokens = async (req, res, next) => {
+    try {
+      const { refreshToken } = req.body;
+      const newAccessToken = await UserService.refreshToken({
+        refreshToken,
+      });
+  
+      return res.status(OK).json({
+        success: true,
+        message: MESSAGES.DONE_SUCCESSFULLY,
+        data: { token: `Bearer ${newAccessToken}`},
+      });
+    } catch (err) {
+      return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
+    }
+  };
 export default {
     register,
     login,
     updatePersonalInfo,
     superAdminOnly,
+    refreshTokens,
 }

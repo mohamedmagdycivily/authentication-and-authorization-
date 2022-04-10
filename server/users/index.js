@@ -1,7 +1,7 @@
 import express from "express";
 import validateRequest from "../../common/middleware/joi"
 import validationSchemas from "./validation/users";
-import{USER__REGISTER, USER__LOGIN, USER__UPDATE_PERSONAL_INFO, USER__SUPER_ADMIN_ONLY} from "./helpers/constant"
+import{USER__REGISTER, USER__LOGIN, USER__UPDATE_PERSONAL_INFO, USER__SUPER_ADMIN_ONLY, USER_REFRESH_TOKENS} from "./helpers/constant"
 import  middleware from "./middleware/index"
 import AuthAPI from '../../common/middleware/auth';
 
@@ -10,6 +10,7 @@ const {
     login,
     updatePersonalInfo,
     superAdminOnly,
+    refreshTokens,
 } = middleware;
 
 const Router = express.Router();
@@ -36,4 +37,10 @@ Router.get(
     AuthAPI(USER__SUPER_ADMIN_ONLY),
     superAdminOnly,
 );
+
+Router.post(
+    '/refresh-token',
+    validateRequest(validationSchemas[USER_REFRESH_TOKENS]),
+    refreshTokens,
+  );
 module.exports = Router;

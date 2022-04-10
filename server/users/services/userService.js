@@ -1,5 +1,5 @@
 import {
-  BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, CREATED, NO_CONTENT,
+  BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, CREATED, UNAUTHORIZED,
 } from 'http-status';
 import _ from 'lodash';
 import bcrypt from 'bcryptjs';
@@ -9,6 +9,9 @@ import ErrorResponse from '../../../common/utils/errorResponse';
 import { errorCodes, SALT_ROUNDS } from '../../../common/constants';
 import User from '../model/userModel';
 import { ADMIN } from '../helpers/constant';
+const secret = process.env.JWT_SECRET || 'BGWWgrUmlx';
+const accessTokenExpiration = process.env.ACCESS_TOKEN_EXPIRATION || '1d';
+const refreshTokenExpiration = process.env.REFRESH_TOKEN_EXPIRATION || '30d';
 const userService = {
     async register({
         email,
@@ -87,11 +90,11 @@ const userService = {
     },
 
     generateJWTAccessToken(payload) {
-      return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION });
+      return jwt.sign(payload, secret, { expiresIn: accessTokenExpiration });
     },
 
     generateJWTRefreshToken(payload) {
-      return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION });
+      return jwt.sign(payload, secret, { expiresIn: refreshTokenExpiration });
     },
 
     async login({email, password}){
@@ -153,6 +156,51 @@ const userService = {
         },
       };
       return User.findOne(selector, projection);
+    },
+    async getUserById(id) {
+      console.log("🌟");
+      const selector = { '_id': id };
+      const projection = {
+        fields: {
+          _id: 1,
+          hashedPassword: 1,
+          roles: 1,
+          email: 1,
+          profile: 1,
+          createdAt: 1,
+          lastSessionResetDate: 1,
+        },
+      };
+      return User.findOne(selector, projection);
+    },
+    async refreshToken({ refreshToken }) {
+      try {
+        let decodedToken;
+        try {
+          decodedToken = jwt.verify(refreshToken, secret);
+        } catch (err) {
+          throw new ErrorResponse(
+            errorCodes.INVALID_SIGNATURE.message,
+            UNAUTHORIZED,
+            errorCodes.INVALID_SIGNATURE.code,
+          );
+        }
+  
+        const user = await User.findOne({ _id: decodedToken.id }, {});
+        if (!user) {
+          throw new ErrorResponse(
+            errorCodes.USER_NOT_FOUND.message,
+            UNAUTHORIZED,
+            errorCodes.USER_NOT_FOUND.code,
+          );
+        }
+  
+        const payload = await this.prepareUserObjectForJWTSigning(user);
+  
+        return this.generateJWTAccessToken(payload);
+      } catch (err) {
+        throw new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode);
+      }
     },
 }
 

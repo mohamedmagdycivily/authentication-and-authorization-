@@ -12,5 +12,8 @@ export const errorCodes = {
     message: 'User not found',
     code: 1047,
   },
-
+  INVALID_SIGNATURE: {
+    message: 'Invalid signature',
+    code: 1067,
+  },
 }

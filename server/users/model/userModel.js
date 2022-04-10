@@ -2,11 +2,10 @@ import UserSchema from '../schema';
 import _ from 'lodash';
 
 class User {
-    async findOne(selector = {}, projection = {}, user = {}) {
+    async findOne(selector = {}, projection = {}) {
       let { fields } = projection;
-      let allowedFields = {};
 
-      return UserSchema.findOne(selector).select(fields).lean();
+      return UserSchema.findOne(selector).select(fields);
     }
 
     async create(params) {
