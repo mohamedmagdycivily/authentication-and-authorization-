@@ -3,11 +3,14 @@ const cors = require("cors");
 const morgan = require("morgan");
 const ExpressApp = express();
 const cookieParser = require("cookie-parser");
+const swaggerUi = require('swagger-ui-express');
 
 const ErrorResponse = require("./common/utils/errorResponse");
 const handleError = require("./common/middleware/handleError");
 const userRoutes = require("./server/users/index.js")
 const { BASE_URL} = require('./common/constants');
+const swaggerDocument = require('./common/swagger/index');
+const swaggerHtml = swaggerUi.generateHTML(swaggerDocument);
 
 //middleware
 ExpressApp.use(morgan("dev"));
@@ -16,6 +19,11 @@ ExpressApp.use(cors());
 ExpressApp.use(express.json());
 ExpressApp.use(cookieParser());
 
+//swagger
+ExpressApp.use('/docs', swaggerUi.serveFiles(swaggerDocument));
+ExpressApp.get('/docs', (req, res) => {
+  res.send(swaggerHtml);
+});
 // Test middleware
 ExpressApp.use((req, res, next) => {
   req.requestTime = new Date().toISOString();

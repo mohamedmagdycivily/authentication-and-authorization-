@@ -1,0 +1,387 @@
+{
+    "/users/register": {
+        "post": {
+            "tags": [
+                "users"
+            ],
+            "summary": "Creates user",
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "required": [
+                                "email",
+                                "password",
+                                "profile"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "example": "mohamedmagdy1@gmail.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "password"
+                                },
+                                "profile": {
+                                    "type": "object",
+                                    "properties": {
+                                        "firstName": {
+                                            "type": "string",
+                                            "example": "Test "
+                                        },
+                                        "lastName": {
+                                            "type": "string",
+                                            "example": "Name"
+                                        },
+                                        "phone": {
+                                            "type": "Number",
+                                            "example": "01069999887"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {}
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {}
+                },
+                "401": {
+                    "description": "UnAuthorized",
+                    "content": {}
+                },
+                "500": {
+                    "description": "Server Error",
+                    "content": {}
+                }
+            },
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/users/activate-account/{token}": {
+        "patch": {
+            "tags": [
+                "users"
+            ],
+            "summary": "activate account",
+            "parameters": [
+                {
+                    "name": "token",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {}
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {}
+                },
+                "401": {
+                    "description": "UnAuthorized",
+                    "content": {}
+                },
+                "500": {
+                    "description": "Server Error",
+                    "content": {}
+                }
+            },
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ]
+        }
+    },
+    "/users/login": {
+        "post": {
+            "tags": [
+                "users"
+            ],
+            "summary": "login user",
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "required": [
+                                "email",
+                                "password"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "example": "mohamedmagdy1@gmail.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {}
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {}
+                },
+                "401": {
+                    "description": "UnAuthorized",
+                    "content": {}
+                },
+                "500": {
+                    "description": "Server Error",
+                    "content": {}
+                }
+            },
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ]
+        }
+    },
+    "/users/personal-info": {
+        "put": {
+            "tags": [
+                "users"
+            ],
+            "summary": "test if you have permission to view personal info (if you have role admin then you have the permission)",
+            "parameters": [
+                {
+                    "name": "firstName",
+                    "in": "body",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {}
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {}
+                },
+                "401": {
+                    "description": "UnAuthorized",
+                    "content": {}
+                },
+                "500": {
+                    "description": "Server Error",
+                    "content": {}
+                }
+            },
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ]
+        }
+    },
+    "/users/super-admin-only": {
+        "get": {
+            "tags": [
+                "users"
+            ],
+            "summary": "test if you have permission to view personal info (if you have role super admin then you have the permission)",
+            "parameters": [],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {}
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {}
+                },
+                "401": {
+                    "description": "UnAuthorized",
+                    "content": {}
+                },
+                "500": {
+                    "description": "Server Error",
+                    "content": {}
+                }
+            },
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ]
+        }
+    },
+    "/users/refresh-token": {
+        "post": {
+            "tags": [
+                "users"
+            ],
+            "summary": "return new jwt token",
+            "description": "returns new jwt token",
+            "parameters": [
+                {
+                    "name": "refreshToken",
+                    "in": "body",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {}
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {}
+                },
+                "401": {
+                    "description": "UnAuthorized",
+                    "content": {}
+                },
+                "500": {
+                    "description": "Server Error",
+                    "content": {}
+                }
+            },
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ]
+        }
+    },
+    "/users/forget-password": {
+        "post": {
+            "tags": [
+                "users"
+            ],
+            "summary": "send reset link to email",
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "required": [
+                                "email"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "example": "mohamedmagdy1@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {}
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {}
+                },
+                "401": {
+                    "description": "UnAuthorized",
+                    "content": {}
+                },
+                "500": {
+                    "description": "Server Error",
+                    "content": {}
+                }
+            },
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "x-codegen-request-body-name": "body"
+        }
+    },
+    "/users/password-reset/{token}": {
+        "patch": {
+            "tags": [
+                "users"
+            ],
+            "summary": "reset the user password",
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "required": [
+                                "password"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "password": {
+                                    "type": "string",
+                                    "example": "password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            },
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {}
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {}
+                },
+                "401": {
+                    "description": "UnAuthorized",
+                    "content": {}
+                },
+                "500": {
+                    "description": "Server Error",
+                    "content": {}
+                }
+            },
+            "security": [
+                {
+                    "Bearer": []
+                }
+            ],
+            "x-codegen-request-body-name": "body"
+        }
+    }
+}
