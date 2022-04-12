@@ -95,11 +95,38 @@ const refreshTokens = async (req, res, next) => {
       return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
     }
   };
+
+  const forgetPassword = async (req, res, next) => {
+    try {
+      const { email } = req.body;
+      await UserService.forgetPassword({ email , req});
+      return res
+        .status(OK)
+        .json({ success: true, message: MESSAGES.RESET_LINK_SENT_SUCCESS, data: null });
+    } catch (err) {
+      return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
+    }
+  };
+
+  const resetPassword = async (req, res, next) => {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+      await UserService.resetPassword({ token, password });
+  
+      return res.status(OK).json({ success: true, message: MESSAGES.PASSWORD_UPDATED, data: null });
+    } catch (err) {
+      return next(new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode));
+    }
+  };
+
 export default {
     register,
     login,
     updatePersonalInfo,
     superAdminOnly,
     refreshTokens,
-    confirmEmailToken
+    confirmEmailToken,
+    forgetPassword,
+    resetPassword,
 }

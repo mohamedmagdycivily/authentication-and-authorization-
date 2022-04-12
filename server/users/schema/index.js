@@ -18,6 +18,7 @@ const UserSchema = new Schema(
             trim: true,
           },
           verified: { type: Boolean, default: false },
+          _id: false,
         },
       },
       emailToken: {
@@ -36,6 +37,7 @@ const UserSchema = new Schema(
             type: String,
             required: true,
           },
+          _id: false,
         },
       },
       roles: {
@@ -45,19 +47,6 @@ const UserSchema = new Schema(
       },
       hashedPassword: {
         type: String,
-      },
-      group: {
-        type: {
-          _id: {
-            type: String,
-          },
-          name: {
-            type: String,
-          },
-          code: {
-            type: Number,
-          },
-        },
       },
       lastSessionResetDate: {
         type: Date,
@@ -69,6 +58,12 @@ const UserSchema = new Schema(
       },
       emailTokenExpiration: {
         type: String,
+      },
+      resetPasswordToken: {
+        type: String,
+      },
+      resetPasswordExpires: {
+        type: Date,
       },
     },
     { collection: 'users', timestamps: true },

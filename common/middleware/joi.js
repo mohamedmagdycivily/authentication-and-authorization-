@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 const { BAD_REQUEST } = require ('http-status');
+import _ from 'lodash';
 
 const validateRequest = (_schema) => {
   const joiValidationOptions = {

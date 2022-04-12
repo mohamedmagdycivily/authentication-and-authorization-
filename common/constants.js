@@ -5,6 +5,8 @@ export const MESSAGES = {
     CREATED: 'created successfully.',
     DONE_SUCCESSFULLY: 'Done successfully.',
     EMAIL_VERIFIED: 'Email verified successfully.',
+    RESET_LINK_SENT_SUCCESS: 'Reset link sent to your mail.',
+    PASSWORD_UPDATED: 'Password updated successfully',
 }
 export const errorCodes = {
   ILLEGAL_ARGUMENT_EXCEPTION: { message: 'Illegal argument exception.', code: 1003 },
@@ -24,4 +26,5 @@ export const errorCodes = {
   LOGIN_FAILED: { message: 'Login Failed: invalid email or password.', code: 1045 },
   USER_NO_LONGER_EXIST: { message: 'The user belonging to this token does no longer exist.', code: 1050 },
   USER_CHANGED_PASSWORED: { message: 'User recently changed password! Please log in again.', code: 1060 },
+  TOKEN_INVALID: { message: 'Token not found or expired.', code: 1011 },
 }

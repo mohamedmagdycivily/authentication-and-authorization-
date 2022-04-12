@@ -8,7 +8,7 @@ const handleError = () =>
       errorCode: err.errorCode,
       data: null,
       //Should be removed in production.
-      stack: err.stack,
+      // stack: err.stack,
     });
   };
 

@@ -218,6 +218,67 @@ const userService = {
       };
       return User.update(user._id, { $set: params });
     },
+
+    async forgetPassword({ email , req}) {
+      try {
+        const token = crypto.randomBytes(20).toString('hex');
+        const user  = await this.getUser({ 'email.address': email });
+        if (!user) {
+          throw new ErrorResponse(
+            errorCodes.USER_NOT_FOUND.message,
+            BAD_REQUEST,
+            errorCodes.USER_NOT_FOUND.code,
+          );
+        }
+        const params = {
+          resetPasswordToken: token,
+          resetPasswordExpires: Date.now() + 3600000,
+        };
+  
+        await User.update(user._id, { $set: params });
+  
+        // Send it to user's email
+        const resetURL = `${req.protocol}://${req.get(
+          "host"
+        )}/api/v0/users/resetPassword/${token}`;
+        
+        await new Email(user, resetURL).sendMail(
+          "Please click the link provided, to reset your password"
+        );
+
+      } catch (err) {
+        throw new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode);
+      }
+    },
+
+    async resetPassword({ token, password }) {
+      try {
+        const selector = {
+          resetPasswordToken : token,
+          resetPasswordExpires: { $gt: new Date() },
+        }
+        const user = await this.getUser(selector);
+        if (!user) {
+          throw new ErrorResponse(
+            errorCodes.TOKEN_INVALID.message,
+            BAD_REQUEST,
+            errorCodes.TOKEN_INVALID.code,
+          );
+        }
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+        const params = {
+          hashedPassword,
+          resetPasswordExpires: null,
+          resetPasswordToken: null,
+          lastSessionResetDate: new Date(),
+        };
+        await User.update(user._id, { $set: params });
+  
+      } catch (err) {
+        throw new ErrorResponse(err.message, err.status || INTERNAL_SERVER_ERROR, err.errorCode);
+      }
+    },
 }
 
 export default userService;

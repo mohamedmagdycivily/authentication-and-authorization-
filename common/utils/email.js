@@ -2,8 +2,8 @@ const nodemailer = require("nodemailer");
 
 module.exports = class Email {
   constructor(user, textInMail) {
-    this.to = user.email;
-    this.firstName = user.name;
+    this.to = user.email.address;
+    this.firstName = user.profile.firstName;
     this.textInMail = textInMail;
     this.from = `auth <${process.env.EMAIL_FROM}>`;
   }
