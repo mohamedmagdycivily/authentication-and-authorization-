@@ -5,7 +5,7 @@
 - `npm start` (Use it to run your server)
 
 #### for apis documentation 
-- from your browser go to please go to /docs
+- from your browser please go to /docs
 
 
 ### To do later: 
