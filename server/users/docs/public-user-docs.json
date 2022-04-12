@@ -174,7 +174,7 @@
             "tags": [
                 "users"
             ],
-            "summary": "test if you have permission to view personal info (if you have role admin then you have the permission)",
+            "summary": "test if you have permission to edit personal info (if you have role admin then you have the permission)",
             "parameters": [
                 {
                     "name": "firstName",
@@ -214,7 +214,7 @@
             "tags": [
                 "users"
             ],
-            "summary": "test if you have permission to view personal info (if you have role super admin then you have the permission)",
+            "summary": "test if you have permission to hit this api (if you have role super admin then you have the permission)",
             "parameters": [],
             "responses": {
                 "200": {
